@@ -1,6 +1,7 @@
 #property strict
 
-input int FastMAPeriod = 10; // 短期移動平均の期間
+input int MomPeriod = 10; // モメンタムの期間
+input double MaxMom = 10; // (モメンタム-100)の最大値
 input int SlowMAPeriod = 40; // 長期移動平均の期間
 input double Lots = 0.1; // 売買ロット数
 
@@ -10,11 +11,11 @@ int Ticket = 0; // チケット番号
 void OnTick()
 {
     // 1本前の移動平均
-    double FastMA1 = iMA(_Symbol, 0, FastMAPeriod, 0, MODE_SMA, PRICE_CLOSE, 1);
+    double FastMA1 = iCustom(_Symbol, 0, "ex10_ind", MomPeriod, MaxMom, 0, 1);
     double SlowMA1 = iMA(_Symbol, 0, SlowMAPeriod, 0, MODE_SMA, PRICE_CLOSE, 1);
 
     // 2本前の移動平均
-    double FastMA2 = iMA(_Symbol, 0, FastMAPeriod, 0, MODE_SMA, PRICE_CLOSE, 2);
+    double FastMA2 = iCustom(_Symbol, 0, "ex10_ind", MomPeriod, MaxMom, 0, 2);
     double SlowMA2 = iMA(_Symbol, 0, SlowMAPeriod, 0, MODE_SMA, PRICE_CLOSE, 2);
 
     int pos = 0; // ポジションの状態
@@ -38,7 +39,7 @@ void OnTick()
         // ポジションがなければ買い注文
         if(pos == 0) Ticket = OrderSend(_Symbol, OP_BUY, Lots, Ask, 0, 0, 0);
     }
-    
+
     if(FastMA2 >= SlowMA2 && FastMA1 < SlowMA1) // 売りシグナル
     {
         // 買いポジションがあれば決済注文
