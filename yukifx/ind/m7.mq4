@@ -1,5 +1,7 @@
 #property strict
 
+#property indicator_chart_window
+
 #property indicator_buffers 8
 
 double Buf1[], Buf2[], Buf3[], Buf4[], Buf5[], Buf6[], Buf7[], Buf8[];
